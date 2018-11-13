@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import Web3 from "web3";
 
 class App extends Component {
-  state = { isConnected: false };
+  state = {
+    isConnected: false,
+    error: "",
+  };
 
   componentWillMount() {
     if (window.ethereum) {
@@ -21,9 +24,10 @@ class App extends Component {
       this.web3 = new Web3(window.web3.currentProvider);
       this.web3.eth.net.getNetworkType().then(res => {
         if (res !== "ropsten") {
-          console.error(
-            "Wrong network detected. Please switch to the Ropsten test network."
-          );
+          this.setState({
+            error:
+              "Wrong network detected. Please switch to the Ropsten test network.",
+          });
         } else {
           console.log("Connected to the Ropsten test network.");
           this.setState({ isConnected: true });
@@ -32,9 +36,10 @@ class App extends Component {
     }
     // Non-dapp browsers...
     else {
-      console.log(
-        "Non-Ethereum browser detected. You should consider trying MetaMask!"
-      );
+      this.setState({
+        error:
+          "Non-Ethereum browser detected. You should consider trying MetaMask!",
+      });
     }
   }
 
@@ -43,7 +48,7 @@ class App extends Component {
       <div>
         <h2>Is connected?:</h2>
         <br />
-        {this.state.isConnected ? "Connected to local node" : "Not Connected"}
+        {this.state.isConnected ? "Connected to local node" : this.state.error}
       </div>
     );
   }
